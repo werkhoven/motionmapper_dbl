@@ -60,7 +60,6 @@ fprintf(1,'Finding Subset Statistics\n');
 numToTest = parameters.pca_batchSize;
 [pixels,thetas,means,stDevs,vidObjs] = findRadonPixels(alignmentDirectory,numToTest,parameters);
 
-
 %% Find postural eigenmodes
 
 fprintf(1,'Finding Postural Eigenmodes\n');
@@ -78,7 +77,6 @@ drawnow;
 
 %% Find projections for each data set
 
-
 projectionsDirectory = [filePath './projections/'];
 if ~exist(projectionsDirectory,'dir')
     mkdir(projectionsDirectory);
@@ -89,7 +87,7 @@ for i=1:L
     
     fprintf(1,'\t Finding Projections for File #%4i out of %4i\n',i,L);
     projections = findProjections(alignmentFolders{i},vecs,meanValues,pixels,parameters);
-    projections = medfilt1(projections,3,[],1);
+    
     fileNum = [repmat('0',1,numZeros-length(num2str(i))) num2str(i)];
     fileName = imageFiles{i};
     
@@ -109,14 +107,14 @@ fprintf(1,'Finding Training Set\n');
     runEmbeddingSubSampling(projectionsDirectory,parameters);
 
 %% Run t-SNE on training set
-tic
+
 
 fprintf(1,'Finding t-SNE Embedding for the Training Set\n');
 [trainingEmbedding,betas,P,errors] = run_tSne(trainingSetData,parameters);
-toc
+
 
 %% Find Embeddings for each file
-tic
+
 fprintf(1,'Finding t-SNE Embedding for each file\n');
 embeddingValues = cell(L,1);
 for i=1:L
@@ -132,7 +130,7 @@ for i=1:L
     clear projections
     
 end
-toc
+
 %% Make density plots
 
 
