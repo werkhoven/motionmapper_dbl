@@ -1,0 +1,76 @@
+function [varargout] = alignVideos
+
+%add utilities folder to path
+addpath(genpath('./utilities/'));
+
+info = what;
+
+% prompt user for file path
+[fDir] = uigetdir(info.path,...
+    'Select directory containing .avi files to be aligned');
+
+% find all avi files in 'filePath'
+imageFiles = getHiddenMatDir(fDir,'ext','.avi');
+L = length(imageFiles);
+numZeros = ceil(log10(L+1e-10));
+
+%define any desired parameter changes here
+parameters.samplingFreq = 100;
+parameters.trainingSetSize = 20000;
+
+%initialize parameters
+parameters = setRunParameters(parameters);
+
+firstFrame = 1;
+lastFrame = [];
+
+%% Run Alignment
+
+% prompt user to select target directory for aligned movies
+[alignmentDirectory] = uigetdir(info.path,...
+    'Select location to save aligned movies');
+if ~exist(alignmentDirectory,'dir')
+    mkdir(alignmentDirectory);
+end
+    
+
+%run alignment for all files in the directory
+fprintf(1,'Aligning Files\n');
+alignmentFolders = cell(L,1);
+fLabels = cell(L,1);
+for i=1:L    
+    
+    fprintf(1,'\t Aligning File #%4i out of %4i\n',i,L);
+    fileNum = [repmat('0',1,numZeros-length(num2str(i))) num2str(i)];
+    [~,tmpLabel,~] = fileparts(imageFiles{i});
+    fLabels(i) = {tmpLabel};
+    tempDir = [alignmentDirectory 'alignment_' tmpLabel '/'];
+    alignmentFolders{i} = tempDir;
+    
+    outputStruct = runAlignment(imageFiles{i},tempDir,firstFrame,lastFrame,parameters);
+    
+    save([tempDir '_outputStruct.mat'],'outputStruct');
+    
+    clear outputStruct
+    clear fileNum
+    clear tempDirectory
+    
+end
+
+
+%% get aligned video files and labels
+
+alignmentFiles = getHiddenMatDir(alignmentDirectory,'ext','.avi');
+
+% find all avi files in 'filePath'
+a=dir(alignmentDirectory);
+fLabel = cell(length(a),1);
+
+
+for i = 1:length(a)
+    if ~any(strcmp(a(i).name,{'.','..'}))
+        fLabel(i) = {a(i).name};
+    end
+end
+
+fLabel(cellfun(@isempty,fLabel)) = [];

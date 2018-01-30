@@ -1,5 +1,4 @@
-function [trainingSetData,trainingSetAmps,projectionFiles] = ...
-            runEmbeddingSubSampling(projectionDirectory,parameters)
+function [trainingSetData,trainingSetAmps,projectionFiles] = runEmbeddingSubSampling(projectionDirectory,parameters)
 %runEmbeddingSubSampling generates a training set given a set of .mat files
 %
 %   Input variables:
@@ -21,23 +20,14 @@ function [trainingSetData,trainingSetAmps,projectionFiles] = ...
 % (C) Gordon J. Berman, 2014
 %     Princeton University
     
-    addpath(genpath('./utilities/'));
-    addpath(genpath('./t_sne/'));
-    
+
     if nargin < 2
         parameters = [];
     end
     parameters = setRunParameters(parameters);
     
-    
-    if matlabpool('size') ~= parameters.numProcessors;
-        matlabpool close force
-        if parameters.numProcessors > 1
-            matlabpool(parameters.numProcessors);
-        end
-    end
-    
-    
+    setup_parpool(parameters.numProcessors)
+
     
     projectionFiles = findAllImagesInFolders(projectionDirectory,'.mat');
     
@@ -49,6 +39,7 @@ function [trainingSetData,trainingSetAmps,projectionFiles] = ...
      
     trainingSetData = zeros(numPerDataSet*L,numModes*numPeriods);
     trainingSetAmps = zeros(numPerDataSet*L,1);
+    useIdx = true(numPerDataSet*L,1);
     
     for i=1:L
         
@@ -64,11 +55,15 @@ function [trainingSetData,trainingSetAmps,projectionFiles] = ...
             findTemplatesFromData(signalData,yData,signalAmps,...
                                 numPerDataSet,parameters);
             
-            
+        a = sum(trainingSetData(currentIdx,:),2) == 0;
+        useIdx(currentIdx(a)) = false;
+                                                        
     end
     
-    
+    trainingSetData = trainingSetData(useIdx,:);
+    trainingSetAmps = trainingSetAmps(useIdx);
+        
     
     if parameters.numProcessors > 1  && parameters.closeMatPool
-        matlabpool close
+        close_parpool
     end

@@ -38,12 +38,11 @@ function parameters = setRunParameters(parameters)
     minArea = 3500;
     
     %asymmetry threshold used in eliminating rotational degeneracy (set to -1 for auto)
-    asymThreshold = -1;
+    asymThreshold = 150;
     
     %line about which directional symmetry is 
     %determined for eliminating rotational degeneracy
-    sizeScale=200/200;
-    symLine = 110*sizeScale;
+    symLine = 110;
     
     %initial guess for rotation angle
     initialPhi = 0;
@@ -55,7 +54,7 @@ function parameters = setRunParameters(parameters)
     cannyParameter = .1;
 
    %threshold for image segmentation
-    imageThreshold = 10;
+    imageThreshold = 40;
 
     %largest allowed percentage reduction in area from frame to frame
     maxAreaDifference = .15;
@@ -64,7 +63,7 @@ function parameters = setRunParameters(parameters)
     segmentationOff = false;
     
     %threshold for seperating body from background (set to -1 for auto)
-    bodyThreshold = -1;
+    bodyThreshold = 150;
 
     %number of images to test for image size estimation
     areaNormalizationNumber = 100;

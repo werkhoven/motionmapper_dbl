@@ -21,27 +21,16 @@ function [zValues,outputStatistics] = ...
 % (C) Gordon J. Berman, 2014
 %     Princeton University
 
-    addpath(genpath('./utilities/'));
-    addpath(genpath('./t_sne/'));
-    
-    
     if nargin < 4
         parameters = [];
     end
     parameters = setRunParameters(parameters);
     
+        
+    setup_parpool(parameters.numProcessors)
     
     
-    if matlabpool('size') ~= parameters.numProcessors;
-        matlabpool close force
-        if parameters.numProcessors > 1
-            matlabpool(parameters.numProcessors);
-        end
-    end
-    
-    
-    
-    d = length(trainingData(1,:));
+    d = length(projections(1,:));
     numModes = parameters.pcaModes;
     numPeriods = parameters.numPeriods;
     
@@ -83,5 +72,5 @@ function [zValues,outputStatistics] = ...
                                 
     
     if parameters.numProcessors > 1  && parameters.closeMatPool
-        matlabpool close
+        close_parpool
     end
