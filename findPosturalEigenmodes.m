@@ -36,7 +36,7 @@ function [vecs,vals,meanValue] = findPosturalEigenmodes(filePath,pixels,paramete
         
     else
         
-        files = getHiddenMatDir(filePath,'ext','avi');
+        files = getHiddenMatDir(filePath,'ext','.avi');
         N = length(files);
         vidObjs = cell(N,1);
         parfor i=1:N

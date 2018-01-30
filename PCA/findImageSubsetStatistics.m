@@ -19,7 +19,7 @@ function [meanRadon,stdRadon,vidObjs] = findImageSubsetStatistics(alignedImageDi
 %     Princeton University
 
 
-    files = getHiddenMatDir(alignedImageDirectory,'ext','avi');
+    files = getHiddenMatDir(alignedImageDirectory,'ext','.avi');
     L = length(files);
     
     lengths = zeros(L,1);
@@ -80,9 +80,10 @@ function [meanRadon,stdRadon,vidObjs] = findImageSubsetStatistics(alignedImageDi
             a = double(imresize(image,s));
             lowVal = min(a(a>0));
             highVal = max(a(a>0));
-            a = (a - lowVal) / (highVal - lowVal);
-            
-            currentImages(:,:,j) = radon(a,thetas);
+            if ~isempty(lowVal)
+                a = (a - lowVal) / (highVal - lowVal);
+                currentImages(:,:,j) = radon(a,thetas);
+            end
             
         end
         

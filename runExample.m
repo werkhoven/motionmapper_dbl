@@ -1,15 +1,17 @@
 %%example script that will run the code for a set of .avi files that are
 %%found in filePath
 
-%Place path to folder containing example .avi files here
-[fName, filePath, fID] = uigetfile('.avi','Select raw video file','D:\');
-filePath = [filePath '\'];
-
 %add utilities folder to path
 addpath(genpath('./utilities/'));
 
-%find all avi files in 'filePath'
-imageFiles = findAllImagesInFolders(filePath,'.avi');
+info = what;
+
+% prompt user for file path
+[fDir] = uigetdir(info.path,...
+    'Select directory containing .avi files to be aligned');
+
+% find all avi files in 'filePath'
+imageFiles = getHiddenMatDir(fDir,'ext','.avi');
 L = length(imageFiles);
 numZeros = ceil(log10(L+1e-10));
 
@@ -25,8 +27,10 @@ lastFrame = [];
 
 %% Run Alignment
 
-%creating alignment directory
-alignmentDirectory = [filePath '/alignment_files/'];
+% prompt user to select target directory for aligned movies
+[alignmentDirectory] = uigetdir(info.path,...
+    'Select location to save aligned movies');
+alignmentDirectory = [alignmentDirectory '\'];
 if ~exist(alignmentDirectory,'dir')
     mkdir(alignmentDirectory);
 end
@@ -87,7 +91,7 @@ for i=1:L
     
     fprintf(1,'\t Finding Projections for File #%4i out of %4i\n',i,L);
     projections = findProjections(alignmentFolders{i},vecs,meanValues,pixels,parameters);
-    
+    projections = medfilt1(projections,3,[],1);
     fileNum = [repmat('0',1,numZeros-length(num2str(i))) num2str(i)];
     fileName = imageFiles{i};
     

@@ -17,7 +17,7 @@ function parameters = setRunParameters(parameters)
     %%%%%%%% General Parameters %%%%%%%%
     
     %number of processors to use in parallel code
-    numProcessors = 12;
+    numProcessors = 4;
     
     %whether or not to close the matlabpool after running a routine
     closeMatPool = false;
@@ -72,7 +72,7 @@ function parameters = setRunParameters(parameters)
     rangeExtension = 20;
     
     %path to basis image
-    basisImagePath = 'segmentation_alignment/basisImage.tiff';
+    %basisImagePath = 'segmentation_alignment/basisImage.tiff';
     
     
     
@@ -259,12 +259,6 @@ function parameters = setRunParameters(parameters)
     if ~isfield(parameters,'symLine') || isempty(parameters.symLine)
         parameters.symLine = symLine;
     end
-    
-    
-    if ~isfield(parameters,'basisImagePath') || isempty(parameters.basisImagePath) 
-        parameters.basisImagePath = basisImagePath;
-    end
-    parameters.basisImage = imread(parameters.basisImagePath);
     
 
     if ~isfield(parameters,'initialPhi') || isempty(parameters.initialPhi)
