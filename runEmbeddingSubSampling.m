@@ -29,7 +29,7 @@ function [trainingSetData,trainingSetAmps,projectionFiles] = runEmbeddingSubSamp
     setup_parpool(parameters.numProcessors)
 
     
-    projectionFiles = findAllImagesInFolders(projectionDirectory,'.mat');
+    projectionFiles = getHiddenMatDir(projectionDirectory,'ext','.mat');
     
     N = parameters.trainingSetSize;
     L = length(projectionFiles);
