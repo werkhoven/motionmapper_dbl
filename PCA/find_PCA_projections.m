@@ -94,10 +94,12 @@ function projections = find_PCA_projections(files,coeffs,meanValues,...
                 a = double(imresize(a(:,:,1),s));
                 lowVal = min(a(a>0));
                 highVal = max(a(a>0));
-                a = (a - lowVal) / (highVal - lowVal);
-                
-                R = radon(a,thetas);
-                tempData(j,:) = R(pixels) - meanValues;
+                if ~isempty(lowVal)
+                    a = (a - lowVal) / (highVal - lowVal);
+
+                    R = radon(a,thetas);
+                    tempData(j,:) = R(pixels) - meanValues;
+                end
                 
             end
             

@@ -44,7 +44,8 @@ for i=1:L
     fprintf(1,'\t Aligning File #%4i out of %4i\n',i,L);
     
     fileNum = [repmat('0',1,numZeros-length(num2str(i))) num2str(i)];
-    tempDirectory = [alignmentDirectory 'alignment_' fileNum '/'];
+    [~,fLabel,~] = fileparts(imageFiles{i});
+    tempDirectory = [alignmentDirectory 'alignment_' fLabel '/'];
     alignmentFolders{i} = tempDirectory;
     
     %outputStruct = runAlignment(imageFiles{i},tempDirectory,firstFrame,lastFrame,parameters);
@@ -81,21 +82,20 @@ drawnow;
 
 %% Find projections for each data set
 
-projectionsDirectory = [filePath './projections/'];
+projectionsDirectory = [alignmentDirectory './projections/'];
 if ~exist(projectionsDirectory,'dir')
     mkdir(projectionsDirectory);
 end
 
 fprintf(1,'Finding Projections\n');
-for i=1:L
+for i=5:L
     
     fprintf(1,'\t Finding Projections for File #%4i out of %4i\n',i,L);
     projections = findProjections(alignmentFolders{i},vecs,meanValues,pixels,parameters);
     projections = medfilt1(projections,3,[],1);
-    fileNum = [repmat('0',1,numZeros-length(num2str(i))) num2str(i)];
-    fileName = imageFiles{i};
+    [~,fLabel,~] = fileparts(alignmentFolders{i});
     
-    save([projectionsDirectory 'projections_' fileNum '.mat'],'projections','fileName');
+    save([projectionsDirectory 'projections_' fLabel '.mat'],'projections');
     
     clear projections
     clear fileNum

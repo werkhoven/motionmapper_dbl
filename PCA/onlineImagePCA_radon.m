@@ -98,10 +98,12 @@ function [mu,vecs,vals] = onlineImagePCA_radon(files,batchSize,scale,pixels,thet
                     a = double(imresize(a(:,:,1),s));
                     lowVal = min(a(a>0));
                     highVal = max(a(a>0));
-                    a = (a - lowVal) / (highVal - lowVal);
-                    
-                    R = radon(a,thetas);
-                    X(i,:) = R(pixels);
+                    if ~isempty(lowVal)
+                        a = (a - lowVal) / (highVal - lowVal);
+
+                        R = radon(a,thetas);
+                        X(i,:) = R(pixels);
+                    end
                     
                 end
                 currentImage = currentBatchSize;
@@ -126,12 +128,14 @@ function [mu,vecs,vals] = onlineImagePCA_radon(files,batchSize,scale,pixels,thet
                     
                     lowVal = min(a(a>0));
                     highVal = max(a(a>0));
-                    a = (a - lowVal) / (highVal - lowVal);
-                    
-                    R = radon(a,thetas);
-                    y = R(pixels);
-                    X(i,:) = y';
-                    tempMu = tempMu + y';
+                    if ~isempty(lowVal)
+                        a = (a - lowVal) / (highVal - lowVal);
+
+                        R = radon(a,thetas);
+                        y = R(pixels);
+                        X(i,:) = y';
+                        tempMu = tempMu + y';
+                    end
                     
                 end
                 
