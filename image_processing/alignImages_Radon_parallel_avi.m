@@ -450,6 +450,7 @@ end
     
      %% Load or create new basis image
 
+ %{
 if exist([fDir '\' fLabel '_basis.png'],'file')
     
         newBasis = imread([fDir '\' fLabel '_basis.png']);
@@ -472,8 +473,10 @@ else
     imwrite(newBasis,[fDir '\' fLabel '_basis.png']);
     
 end
+ %}
 
-segmentationOptions.referenceImage = newBasis;   
+segmentationOptions.referenceImage = imread([segmentationOptions.mapdir ...
+    '\image_processing\basisImage.tiff']);   
 %% Align the images
     
     fprintf(1,'Aligning Images\n');

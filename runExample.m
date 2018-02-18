@@ -5,6 +5,8 @@
 addpath(genpath('./utilities/'));
 
 info = what;
+[mapdir,~,~] = fileparts(which('runExample'));
+addpath(genpath(mapdir));
 
 % prompt user for file path
 [fDir] = uigetdir(info.path,...
@@ -18,6 +20,7 @@ numZeros = ceil(log10(L+1e-10));
 %define any desired parameter changes here
 parameters.samplingFreq = 100;
 parameters.trainingSetSize = 5000;
+parameters.mapdir = mapdir;
 
 %initialize parameters
 parameters = setRunParameters(parameters);
@@ -48,9 +51,9 @@ for i=1:L
     tempDirectory = [alignmentDirectory 'alignment_' fLabel '/'];
     alignmentFolders{i} = tempDirectory;
     
-    %outputStruct = runAlignment(imageFiles{i},tempDirectory,firstFrame,lastFrame,parameters);
+    outputStruct = runAlignment(imageFiles{i},tempDirectory,firstFrame,lastFrame,parameters);
     
-    %save([tempDirectory 'outputStruct.mat'],'outputStruct');
+    save([tempDirectory 'outputStruct.mat'],'outputStruct');
     
     clear outputStruct
     clear fileNum
@@ -135,6 +138,12 @@ for i=1:L
     
 end
 
+embeddingDirectory = [alignmentDirectory 'embeddingValues\'];
+if ~exist(embeddingDirectory,'dir')
+    mkdir(embeddingDirectory);
+end
+save([embeddingDirectory 'embeddingValues.mat'],'embeddingValues');
+
 %% Make density plots
 
 
@@ -188,10 +197,12 @@ z = cellfun(@(x) sqrt([0;diff(x(:,1))].^2 + [0;diff(x(:,2))].^2).*100,...
     embeddingValues,'UniformOutput',false);
 
 figure();
+c=ceil(sqrt(L));
+r = ceil(L/c);
 
 for i = 1:L
     
-    subplot(ceil(L/2),ceil(L/2),i);
+    subplot(r,c,i);
     histogram(log10(z{i}),linspace(-4,4,500));
     set(gca,'XLim',[-2 5],'Ytick',[]);
     xlabel('log(speed)');
@@ -207,7 +218,7 @@ frame_range = f1:f1+20*100;
 
 for i = 1:L
     
-    subplot(ceil(L/2),ceil(L/2),i);
+    subplot(r,c,i);
     hold on
     plot(embeddingValues{i}(frame_range,1),'r','Linewidth',1.5);
     plot(embeddingValues{i}(frame_range,2),'b','Linewidth',1.5);
