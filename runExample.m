@@ -5,7 +5,7 @@
 addpath(genpath('./utilities/'));
 
 info = what;
-[mapdir,~,~] = fileparts(which('runExample'));
+[parameters.mapdir,~,~] = fileparts(which('runExample'));
 addpath(genpath(mapdir));
 
 % prompt user for file path
@@ -42,7 +42,7 @@ end
 %run alignment for all files in the directory
 fprintf(1,'Aligning Files\n');
 alignmentFolders = cell(L,1);
-for i=1:L    
+for i=3:L    
     
     fprintf(1,'\t Aligning File #%4i out of %4i\n',i,L);
     

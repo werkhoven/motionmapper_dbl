@@ -34,7 +34,7 @@ function [Xs,Ys,angles,areas,parameters,framesToCheck,svdskipped,areanorm] = ...
     
     readout = 100;
     nDigits = 8;
-    
+
     spacing = parameters.alignment_angle_spacing;
     pixelTol = parameters.pixelTol;
     minArea = parameters.minArea;
@@ -226,7 +226,6 @@ end
     
     % Grab random frames from input movie
     idx = randi([startImage,nFrames],[parameters.areaNormalizationNumber,1]);
-    %basisImage = imresize(basisImage,[150 150]);
     basisSize = sum(basisImage(:)>0);
     s = size(basisImage);
     currentImageSet = uint8(zeros(s(1),s(2),parameters.areaNormalizationNumber));
@@ -475,8 +474,8 @@ else
 end
  %}
 
-segmentationOptions.referenceImage = imread([segmentationOptions.mapdir ...
-    '\image_processing\basisImage.tiff']);   
+    
+    segmentationOptions.referenceImage = parameters.basisImage;  
 %% Align the images
     
     fprintf(1,'Aligning Images\n');

@@ -54,10 +54,10 @@ function parameters = setRunParameters(parameters)
     cannyParameter = .1;
 
    %threshold for image segmentation
-    imageThreshold = 40;
+    imageThreshold = 20;
 
     %largest allowed percentage reduction in area from frame to frame
-    maxAreaDifference = .15;
+    maxAreaDifference = .10;
 
     %toggle switch for image segmentation (alignment still performed)
     segmentationOff = false;
@@ -71,8 +71,8 @@ function parameters = setRunParameters(parameters)
     %range extension for flipping detector
     rangeExtension = 20;
     
-    %path to basis image
-    %basisImagePath = 'segmentation_alignment/basisImage.tiff';
+    basisImage = imread([parameters.mapdir ...
+    '\image_processing\basisImage.tiff']);   
     
     
     
@@ -357,9 +357,9 @@ function parameters = setRunParameters(parameters)
     
     
     
-    
-    
-    
+    if ~isfield(parameters,'basisImage') || isempty(parameters.basisImage)
+        parameters.basisImage = basisImage;
+    end
     
     
     if ~isfield(parameters,'perplexity') || isempty(parameters.perplexity)
